@@ -1,0 +1,28 @@
+Multi Object TLD
+----------------
+
+Multi Object TLD is an Open Source C++ implementation of the TLD algorithm, which was developed and introduced by Zdenek Kalal. Like the original (OpenTLD, see https://github.com/zk00006/OpenTLD), it is used to track and learn arbitrary, previously unknown objects in a video stream from initially defined bounding boxes.
+
+One distinct feature is its ability to efficiently handle more than one object, since some of the calculations can be reused, provided that the object boxes have the same aspect ratio.
+It also allows some very basic level of color recognition abilities, which can for example be used to distinguish different sides of a Rubik's cube, or other structurally similar looking objects.
+
+Another interesting characteristic is that no third party libraries (like OpenCV for instance) are used in the main components. So it is especially handy for portable use or on platforms where an OpenCV installation would be inconvenient (or if you're too lazy to compile it). However, some of the included examples use OpenCV for camera input.
+
+
+There are three example programs included:
+
+- batchExample: the most basic one. It can be used to automatically load examples (including locations of initial boxes) from any folder (for example from the TLD_dataset) and writes the tracking results into a textfile. Since images are not saved, it is by far the fastest example.
+Receives the file input folder as first and only command line argument.
+
+- sdlExample: Like in the batchExample, files are loaded from a folder. However, the images (including debug information containing patches, detection candidates, clusters and tracking points per frame) are both saved to disk and printed out on the screen. Additionally, arrow keys, pgdn, pgup, home, end can be used to manually navigate through the image sequence if required.
+Also receives the file input folder as first only command line argument.
+Since file operations can be quite expensive, this example is not suited for runtime benchmarking. See the generated runtime.txt instead which only considers the motld components' runtime.
+This example requires SDL and SDL_image. 
+
+- camExample: Receives its input from a connected webcam. Object boxes can be drawn in real time using the mouse. Toggling of patches, detection candidates, clusters and tracking points in the output image can be done with [P] [D] and [T].
+This example requires OpenCV and Highgui.
+
+More basic usage examples can be found in the included Doxygen documentation.
+
+
+Multi Object TLD was programmed by Christian Lutz and Thorsten Engesser as part of a student project.
