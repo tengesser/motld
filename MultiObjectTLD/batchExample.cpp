@@ -26,11 +26,8 @@
   #include <dirent.h>
 #endif
 
-
 #include "motld/MultiObjectTLD.h"
 #include "motld/Utils.h"
-#include <mcheck.h>  // for memory profiling
-
 
 #define DEFAULT_INPUT "input/motocross"
 #define DEFAULT_OUTPUT "output"
@@ -54,10 +51,6 @@ int ppm_select(const struct dirent *entry)
 
 int main(int argc, char *argv[])
 {
-  //mtrace(); // activate for memory profiling
-  
-  std::ofstream hists("histograms.dat", std::ios_base::out | std::ios_base::binary);
-  
   std::string input_folder = DEFAULT_INPUT, output_folder = DEFAULT_OUTPUT;
   if(argc >= 2)
   {
@@ -69,9 +62,7 @@ int main(int argc, char *argv[])
   }
   std::cout << "input folder: " << input_folder << std::endl;
   
-  //int file_select();
   struct dirent **filelist;
-  //char *directory = ;
   int fcount = -1;
   bool gray = false;
   fcount = scandir(input_folder.c_str(), &filelist, ppm_select, alphasort);
@@ -80,7 +71,7 @@ int main(int argc, char *argv[])
     fcount = scandir(input_folder.c_str(), &filelist, pgm_select, alphasort);
     gray = true;
   }
-  if(fcount<=0)
+  if (fcount <= 0)
   {
     std::cout << "There are no .ppm or .pgm files in this folder! Maybe you have to convert the images first e.g. using" << std::endl
       << "  mogrify -format ppm *.jpg" << std::endl;
@@ -132,7 +123,6 @@ int main(int argc, char *argv[])
 
   sprintf(filename, "%s/%s", input_folder.c_str(), filelist[0]->d_name);
   int z;
-  //std::cout << filename << std::endl;
   unsigned char* dummy = gray ? readFromPGM<unsigned char>(filename, width, height) :
                                 readFromPPM<unsigned char>(filename, width, height, z);
   delete[] dummy;
@@ -157,15 +147,12 @@ int main(int argc, char *argv[])
 
   for (int i=0; i < fcount && (!MAX_FILE_NUMBER || i<MAX_FILE_NUMBER); ++i)
   { 
-    // The Image
-    // first load it
+    // first load the image
     sprintf(filename, "%s/%s", input_folder.c_str(), filelist[i]->d_name);
     int xS, yS, z;
     unsigned char* img = gray ? readFromPGM<unsigned char>(filename, xS, yS) :
                                   readFromPPM<unsigned char>(filename, xS, yS, z);
     // then process it with MultiObjectTLD
-    //unsigned char* img = gray ? myimg : toGray<unsigned char>(myimg, xS * yS); 
-    //writeToPGM<unsigned char>("foo.pgm",img,xS,yS);
     p.processFrame(img);
     
     while(boxIt != boxes.end() && boxIt->objectId == i)
@@ -179,7 +166,7 @@ int main(int argc, char *argv[])
     }
 
     #if OUTPUT_IMAGES>0
-    // and save debug image back to pgm file
+    // and save debug image to file
     sprintf(filename, "%s/%s", output_folder.c_str(), filelist[i]->d_name);
     p.writeDebugImage(img,filename);
     #endif
@@ -188,10 +175,9 @@ int main(int argc, char *argv[])
     if(p.getValid())
     {
       ObjectBox b = p.getObjectBox();
-      if(i>0)
+      if(i > 0)
         outStream << std::endl;
-      outStream << b.x << "," << b.y << ","
-                << (b.x + b.width) << "," << (b.y + b.height);
+      outStream << b.x << "," << b.y << "," << (b.x + b.width) << "," << (b.y + b.height);
     }
     else
       outStream << std::endl << "NaN,NaN,NaN,NaN";
@@ -199,7 +185,6 @@ int main(int argc, char *argv[])
   }
   outStream.close();
 
-  //b = p.getObjectBox();
   std::cout << "MultiObjectTLD finished!" << std::endl;
 #if SAVECLASSIFIERATEND
   std::cout << "Saving ..." << std::endl;
@@ -208,7 +193,6 @@ int main(int argc, char *argv[])
   for(int i = 0; i < fcount; i++)
     free(filelist[i]);
   free(filelist);
-  //std::cout << "Object Left Corner at (" << b.x << "," << b.y << "), " << std::endl;
-  //std::cout << "Object Dimensions: (" << b.width << "," << b.height << "), " << std::endl;
+  
   return 0;
 }

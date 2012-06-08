@@ -46,8 +46,6 @@ link the include-folders, the .lib's, and copy the .dll's
 
 #include "motld/MultiObjectTLD.h"
 #include "motld/Utils.h"
-//#include <mcheck.h>  // for memory profiling
-
 
 #define DEFAULT_INPUT "input/motocross"
 #define DEFAULT_OUTPUT "output"
@@ -128,12 +126,7 @@ void SDLEngine::Init(int argc, char *argv[])
 
 int SDLEngine::Run(void*)
 {
-  //mtrace(); // activate for memory profiling
-  
   std::cout << "input folder: " << input_folder << std::endl;
-  
-  //char *directory = ;
-  fcount = -1;
   bool gray = false;
   fcount = scandir(input_folder.c_str(), &filelist, ppm_select, alphasort);
   if (fcount <= 0)
@@ -141,7 +134,7 @@ int SDLEngine::Run(void*)
     fcount = scandir(input_folder.c_str(), &filelist, pgm_select, alphasort);
     gray = true;
   }
-  if(fcount<=0)
+  if (fcount <= 0)
   {
     std::cout << "There are no .ppm or .pgm files in this folder! Maybe you have to convert the images first e.g. using" << std::endl
       << "  mogrify -format ppm *.jpg" << std::endl;
@@ -192,13 +185,11 @@ int SDLEngine::Run(void*)
 
   sprintf(filename, "%s/%s", input_folder.c_str(), filelist[0]->d_name);
   int z;
-  //std::cout << filename << std::endl;
   unsigned char* dummy = gray ? readFromPGM<unsigned char>(filename, width, height) :
                                 readFromPPM<unsigned char>(filename, width, height, z);
   delete[] dummy;
     
-  // Initialize MultiObjectTLD
-  
+  // Initialize MultiObjectTLD  
   MultiObjectTLD p(width, height, MOTLDSettings(gray ? COLOR_MODE_GRAY : COLOR_MODE_RGB));
   std::vector<ObjectBox> addBoxes;
   std::vector<ObjectBox>::iterator boxIt = boxes.begin();
@@ -213,8 +204,7 @@ int SDLEngine::Run(void*)
 
   for (int i=0; i < fcount && (!MAX_FILE_NUMBER || i<MAX_FILE_NUMBER); ++i)
   {
-    // The Image
-    // first load it
+    // first load the image
     sprintf(filename, "%s/%s", input_folder.c_str(), filelist[i]->d_name);
     int xS, yS, z;
     unsigned char* img = gray ? readFromPGM<unsigned char>(filename, xS, yS) :
@@ -232,21 +222,18 @@ int SDLEngine::Run(void*)
       addBoxes.clear();
     }
     
-    // and save debug image back to pgm file
+    // and save debug image to file
     sprintf(filename, "%s/%s", output_folder.c_str(), filelist[i]->d_name);
     p.writeDebugImage(img,filename);
     displaymax = i;
-    //sprintf(filename, "mogrify -format bmp %s/%s", output_folder.c_str(), filelist[i]->d_name);
-    //system(filename);
 
     // print current box to output file
     if(p.getValid())
     {
       ObjectBox b = p.getObjectBox();
-      if(i>0)
+      if(i > 0)
         outStream << std::endl;
-      outStream << b.x << "," << b.y << ","
-                << (b.x + b.width) << "," << (b.y + b.height);
+      outStream << b.x << "," << b.y << "," << (b.x + b.width) << "," << (b.y + b.height);
     }
     else
       outStream << std::endl << "NaN,NaN,NaN,NaN";
@@ -290,7 +277,6 @@ void SDLEngine::HandleInput()
     switch ( event.type ) 
     {
     case SDL_KEYDOWN:
-      // If escape is pressed set the Quit-flag
       switch (event.key.keysym.sym)
       {
       case SDLK_LEFT:

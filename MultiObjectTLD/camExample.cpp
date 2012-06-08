@@ -18,7 +18,7 @@
  
 /*
 This is a live demo invoking a webcam.
-It makes use of OpenCV to capture the frames and highgui to display them.
+It makes use of OpenCV to capture the frames and highgui to display the output.
 
 Use your mouse to draw bounding boxes for tracking.
 There are some keys to customize which components are displayed:
@@ -37,7 +37,6 @@ There are some keys to customize which components are displayed:
 
 #include "cv.h" 
 #include "highgui.h" 
-//#include "pthread.h"
 
 #include "motld/MultiObjectTLD.h"
 
@@ -70,12 +69,6 @@ void FromRGB(Matrix& maRed, Matrix& maGreen, Matrix& maBlue);
 int main(int argc, char *argv[])
 {
   Init(argc, argv);
-  /*
-  pthread_t thread;
-  pthread_create(&thread, NULL, Run, 0);
-  while(!ivQuit)
-    HandleInput(100);
-  */
   Run(0);
   cvDestroyAllWindows();
   return 0;
@@ -132,8 +125,7 @@ void* Run(void*)
   IplImage* frame = cvCreateImage(wsize, IPL_DEPTH_8U, 3);
   #endif
   while(!ivQuit)
-  {
-    
+  {    
     /*
     if(reset){
       p = *(new MultiObjectTLD(ivWidth, ivHeight, COLOR_MODE_RGB));
