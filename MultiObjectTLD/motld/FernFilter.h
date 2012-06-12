@@ -1317,6 +1317,7 @@ inline void FernFilter::addPatchWithWarps(const Matrix& image, const ObjectBox& 
   
   Matrix scaled = image; scaled.rescale(round(width), round(height));  
   ObjectBox newB = {box.x / factX, box.y / factY, ivPatchSize, ivPatchSize};
+  newB.objectId = box.objectId;
   
   Matrix pt(box.width,box.height);
   pt.copyFromFloatArray(scaled.data(), width, height, round(newB.x), round(newB.y), round(newB.width), round(newB.height));

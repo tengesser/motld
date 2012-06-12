@@ -189,8 +189,10 @@ int SDLEngine::Run(void*)
                                 readFromPPM<unsigned char>(filename, width, height, z);
   delete[] dummy;
     
-  // Initialize MultiObjectTLD  
-  MultiObjectTLD p(width, height, MOTLDSettings(gray ? COLOR_MODE_GRAY : COLOR_MODE_RGB));
+  // Initialize MultiObjectTLD
+  MOTLDSettings s(gray ? COLOR_MODE_GRAY : COLOR_MODE_RGB);
+  // s.bbMin = 18;
+  MultiObjectTLD p(width, height, s);
   std::vector<ObjectBox> addBoxes;
   std::vector<ObjectBox>::iterator boxIt = boxes.begin();
 
