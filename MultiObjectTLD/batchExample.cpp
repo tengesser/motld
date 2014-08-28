@@ -105,13 +105,14 @@ int main(int argc, char *argv[])
     if(line[i] == ',')
       for(i++;line[i] >= '0' && line[i] <= '9'; i++)
         imgid = imgid*10 + (line[i] - '0'); 
-    ObjectBox b = {x1,y1,x2-x1,y2-y1,imgid};
+    ObjectBox b = {(float)x1,(float)y1,(float)(x2-x1),(float)(y2-y1),imgid};
     boxes.push_back(b);
   }
   aStream.close();
   
   std::cout << "output folder: " << output_folder << std::endl;
-  if (access(output_folder.c_str(), 0) != 0)
+  DIR * dir = opendir(output_folder.c_str());
+  if (dir == NULL)
   {
     std::cout << "\tdoes not exist -> try to create it" << std::endl;
     if(system(("mkdir "+output_folder).c_str()))
@@ -120,6 +121,7 @@ int main(int argc, char *argv[])
       return 0;
     }
   }
+  closedir(dir);
 
   sprintf(filename, "%s/%s", input_folder.c_str(), filelist[0]->d_name);
   int z;

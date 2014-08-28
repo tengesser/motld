@@ -167,13 +167,14 @@ int SDLEngine::Run(void*)
     if(line[i] == ',')
       for(i++;line[i] >= '0' && line[i] <= '9'; i++)
         imgid = imgid*10 + (line[i] - '0'); 
-    ObjectBox b = {x1,y1,x2-x1,y2-y1,imgid};
+    ObjectBox b = {(float)x1,(float)y1,(float)(x2-x1),(float)(y2-y1),imgid};
     boxes.push_back(b);
   }
   aStream.close();
     
   std::cout << "output folder: " << output_folder << std::endl;
-  if (access(output_folder.c_str(), 0) != 0)
+  DIR * dir = opendir(output_folder.c_str());
+  if (dir == 0)
   {
     std::cout << "\tdoes not exist -> try to create it" << std::endl;
     if(system(("mkdir "+output_folder).c_str()))
@@ -182,6 +183,7 @@ int SDLEngine::Run(void*)
       return 0;
     }
   }
+  closedir(dir);
 
   sprintf(filename, "%s/%s", input_folder.c_str(), filelist[0]->d_name);
   int z;
@@ -260,7 +262,7 @@ void SDLEngine::Render()
   {
     sprintf(filename, "%s/%s", output_folder.c_str(), filelist[display]->d_name);
     SDL_Surface* sdlimg = IMG_Load(filename);
-    SDL_Rect rect = {0,0,ivScreen->w,ivScreen->h};
+    SDL_Rect rect = {0,0,(Uint16)ivScreen->w,(Uint16)ivScreen->h};
     SDL_BlitSurface(sdlimg, &rect, ivScreen, &rect);
     SDL_Flip(ivScreen);
     SDL_FreeSurface(sdlimg);

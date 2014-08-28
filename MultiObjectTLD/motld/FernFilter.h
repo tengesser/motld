@@ -1264,14 +1264,14 @@ inline void FernFilter::addPatch(const int & objId, const int * const featureDat
       }
       else
       {
-        Posteriors p = {pos ? 0 : 1, pos ? 1 : 0, pos ? 1 : 0};
+        Posteriors p = {pos ? 0 : 1, pos ? 1 : 0, pos ? 1.f : 0.f};
         found->second.posteriors[objId] = p;
         found->second.maxConf = MAX(found->second.maxConf, p.posterior);
       }
     }
     else
     {
-      Posteriors p = {pos ? 0 : 1, pos ? 1 : 0, pos ? 1 : 0};
+      Posteriors p = {pos ? 0 : 1, pos ? 1 : 0, pos ? 1.f : 0.f};
       Confidences c;
       c.posteriors[objId] = p;
       c.maxConf = p.posterior;
@@ -1316,7 +1316,7 @@ inline void FernFilter::addPatchWithWarps(const Matrix& image, const ObjectBox& 
   float height = image.ySize() / factY;
   
   Matrix scaled = image; scaled.rescale(round(width), round(height));  
-  ObjectBox newB = {box.x / factX, box.y / factY, ivPatchSize, ivPatchSize};
+  ObjectBox newB = {box.x / factX, box.y / factY, (float)ivPatchSize, (float)ivPatchSize};
   newB.objectId = box.objectId;
   
   Matrix pt(box.width,box.height);

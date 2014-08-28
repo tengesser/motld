@@ -112,7 +112,7 @@ void* Run(void*)
   MultiObjectTLD p = MultiObjectTLD::loadClassifier((char*)CLASSIFIERFILENAME);
   #else
   MOTLDSettings settings(COLOR_MODE_RGB);
-  settings.useColor = true;
+  settings.useColor = false;
   MultiObjectTLD p(ivWidth, ivHeight, settings);
   #endif
   
