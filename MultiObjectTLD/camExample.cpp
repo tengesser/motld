@@ -184,7 +184,7 @@ void HandleInput(int interval)
   int key = cvWaitKey(interval);
   if(key >= 0)
   {
-    switch (key)
+    switch (key & 0xFF)
     {
       case 'd': drawMode ^= DEBUG_DRAW_DETECTIONS;  break;
       case 't': drawMode ^= DEBUG_DRAW_CROSSES;  break;
